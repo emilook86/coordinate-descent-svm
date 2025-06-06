@@ -1,7 +1,6 @@
 import numpy as np
 from scipy.sparse import csc_matrix
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
 
 
 def load_svm_file(file_path, zero_based=True):
@@ -34,7 +33,7 @@ def load_svm_file(file_path, zero_based=True):
                 data.append(float(val))
 
     # Create sparse matrix
-    X = csc_matrix((data, (rows, cols)))
+    X = csc_matrix((data, (rows, cols))).tocsc()
     y = np.array(labels)
 
     return X, y
