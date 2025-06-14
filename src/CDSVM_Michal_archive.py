@@ -68,8 +68,10 @@ class CoordinateDescentSVM:
 
         for iteration in range(self.max_iter):
             w_old = self.w.copy()
+            print(iteration)
             for i in range(X_ext.shape[1]):
                 self._coordinate_update(X_ext, y, i)
+                print(i)
 
             if np.linalg.norm(self.w - w_old) < self.tol:
                 print(f"Converged at iteration {iteration}")

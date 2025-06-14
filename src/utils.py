@@ -1,39 +1,25 @@
 import numpy as np
-from data_loader import load_svm_file
-from sklearn.model_selection import train_test_split
-from CDPER_algorithm import CDPER_L2SVM
-from scipy.sparse import csc_matrix
-
-# CHANGE HERE
-dataset = 1     # pick a number 1-4
-
-if dataset == 1:
-    X, y = load_svm_file('../data/paper_data/news20.binary')
-    data = 'news20'
-    seconds = 400
-
-if dataset == 2:
-    X, y = load_svm_file('../data/paper_data/real-sim.binary')
-    data = 'real-sim'
-    seconds = 200
-
-if dataset == 3:
-    X, y = load_svm_file('../data/paper_data/rcv1_test.binary')
-    data = 'rcv1_test'
-    seconds = 500
-
-if dataset == 4:
-    X, y = load_svm_file('../data/synthetic_data/synthetic1.binary')
-    data = 'synthetic1'
-    seconds = 200
+import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('TkAgg')
 
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-X_train = csc_matrix(X_train)
-X_test = csc_matrix(X_test)
+def plotting(model, X, y):
 
-grand_truth_model = CDPER_L2SVM(C=1, max_iter=1000, random_state=42, max_time=5*seconds)
-grand_truth_model.fit(X_train, y_train)
-f_w_star = grand_truth_model.objective_values[-1][1]
-np.save(f'grand_truth_{data}_value.npy', f_w_star)
-print(f_w_star)
+    plt.figure(figsize=(8, 6))
+    plt.scatter(X[:, 0], X[:, 1], c=y, cmap='bwr', edgecolors='k')
+
+    # Parametry granicy decyzyjnej: w1*x1 + w2*x2 + b = 0 → x2 = -(w1*x1 + b)/w2
+    w = model.w[:-1]
+    b = model.w[-1]
+
+    x_vals = np.linspace(X[:, 0].min() - 1, X[:, 0].max() + 1, 200)
+    y_vals = -(w[0] * x_vals + b)
+
+    plt.plot(x_vals, y_vals, 'k--', label='Decision Boundary')
+    plt.xlabel('x1')
+    plt.ylabel('x2')
+    plt.title('CoordinateDescentSVM – Granica decyzyjna')
+    plt.legend()
+    plt.grid(True)
+    plt.show()

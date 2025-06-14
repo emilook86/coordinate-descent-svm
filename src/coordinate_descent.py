@@ -78,9 +78,11 @@ class SparseCoordinateDescentSVM:
         self.w = np.zeros(X.shape[1])  # Dense (sparse w would complicate updates)
 
         for iteration in range(self.max_iter):
+            print(iteration)
             w_old = self.w.copy()
             for i in range(X.shape[1]):
                 self._coordinate_update(X, y, i)
+                print(i)
 
             if np.linalg.norm(self.w - w_old) < self.tol:
                 print(f"Converged at iteration {iteration}")
